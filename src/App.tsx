@@ -9,15 +9,28 @@ const App: React.FC = (): React.ReactElement => {
   const [activeId, setActiveId] = useState<string>();
 
   const addItemHandler = ({ item, quantity }: AddItemArgumentProps) => {
-    let newItemList: Array<ItemProps> = [
-      ...items,
-      {
-        id: Math.random().toString(),
-        item,
-        quantity,
-      },
-    ];
-    setItems(newItemList);
+
+    let flag:Boolean = false;
+
+    let newItem = items.filter((newitem:ItemProps) => {
+      if (newitem.item === item) {
+        flag = true;
+        newitem.quantity = newitem.quantity + quantity;
+      }
+        return newitem;
+    })
+    setItems(newItem);
+    if (flag === false) {
+      let newItemList: Array<ItemProps> = [
+        ...items,
+        {
+          id: Math.random().toString(),
+          item,
+          quantity,
+        },
+      ];
+      setItems(newItemList);
+    }
   };
 
   const deleteItemHandler = (itemId: string) => {
@@ -57,6 +70,7 @@ const App: React.FC = (): React.ReactElement => {
     if (selectedItem?.quantity <= 0) {
       deleteItemHandler(selectedItem.id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 
   return (
